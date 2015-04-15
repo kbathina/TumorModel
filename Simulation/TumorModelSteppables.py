@@ -7,6 +7,10 @@ import os.path
 
 INIT_MAX_DIVISIONS = 4.0
 KILL_PERIOD = 2000
+GLU_ABSORBED_FRAC = 0.3
+GROWTH_THRESHOLD = 30.
+DEATH_THRESHOLD = 1.
+INITIAL_CONCENTRATION = 5.
 
 # define a data structure to hold a tree of 
 # stem cells and thier progeny
@@ -76,8 +80,9 @@ def KillNode(cell, mcs):
     """
     Find a node, and set its death time
     """
-    node = nodes[cell.id]
-    node.deathTime = mcs
+    if nodes.has_key(cell.id):
+        node = nodes[cell.id]
+        node.deathTime = mcs
     
     
     
@@ -174,7 +179,7 @@ class ConstraintInitializerSteppable(SteppableBasePy):
         
     def start(self):
         field=self.getConcentrationField("Glu")
-        field[:,:,:] = 0
+        field[:,:,:] = INITIAL_CONCENTRATION
         
         
         
@@ -208,9 +213,26 @@ class GrowthSteppable(SteppableBasePy):
     def __init__(self,_simulator,_frequency=1):
         SteppableBasePy.__init__(self,_simulator,_frequency)
     def step(self,mcs):
+        
+        gluField=self.getConcentrationField("Glu")
+        
+        
         for cell in self.cellList:
-            if (cell.targetVolume > 0) and (cell.targetVolume-cell.volume < 5):
-                cell.targetVolume+=1        
+            
+            if cell.type != 0 and cell.targetVolume > 0:
+                x=int(cell.xCOM)
+                y=int(cell.yCOM)
+                z=int(cell.zCOM)
+            
+                gluValue=gluField[x,y,z]
+            
+                gluAbs = GLU_ABSORBED_FRAC * gluValue
+            
+                gluField[x,y,z] = gluValue - gluAbs
+                
+            
+                if (cell.targetVolume > 0) and (cell.targetVolume-cell.volume < 5):
+                    cell.targetVolume+=1. * gluAbs / (GROWTH_THRESHOLD + gluAbs)        
   
 
 class MitosisSteppable(MitosisSteppableBase):
@@ -358,7 +380,26 @@ class DeathSteppable(SteppableBasePy):
         SteppableBasePy.__init__(self,_simulator,_frequency)
         
     def step(self,mcs):
-        pass
+        gluField=self.getConcentrationField("Glu")
+        
+        for cell in self.cellList:
+            
+            
+            if cell.type != 0:
+                x=int(cell.xCOM)
+                y=int(cell.yCOM)
+                z=int(cell.zCOM)
+                gluValue=gluField[x,y,z]   
+               
+                if gluValue < DEATH_THRESHOLD:
+                    writeCell(self, "DEATH", mcs, cell)
+                    KillNode(cell, mcs)
+                    
+                    cell.targetVolume=0
+                    cell.lambdaVolume=0
+                    cell.type = 0
+                    
+            
         
         if mcs % KILL_PERIOD == 0:
         

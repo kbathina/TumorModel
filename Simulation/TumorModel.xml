@@ -74,24 +74,11 @@
       </DiffusionData>
       <SecretionData>
          <!-- When secretion is defined inside DissufionSolverFEall secretio nconstants are scaled automaticly to account for extra calls of the solver when handling large diffusion constants -->
-         
-         <!-- no  secretion Definition 
-         <Secretion Type="Stem">0.1</Secretion>
-         <Secretion Type="Differentiated">0.1</Secretion>
-         -->
+        
+         <Secretion Type="Medium">0.1</Secretion>
+  
       </SecretionData>
-      
-      
-       <BoundaryConditions>
-       <Plane Axis="X">
-         <ConstantValue PlanePosition="Min" Value="10.0"/>
-         <ConstantValue PlanePosition="Max" Value="10.0"/> 
-        </Plane>
-       <Plane Axis="Y">
-          <ConstantValue PlanePosition="Min" Value="10.0"/> 
-          <ConstantValue PlanePosition="Max" Value="10.0"/>
-       </Plane>
-      </BoundaryConditions>
+
 
    </DiffusionField>
 </Steppable>

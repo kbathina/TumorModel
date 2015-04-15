@@ -1,0 +1,96 @@
+<CompuCell3D Revision="20141124" Version="3.7.3">
+   
+   <Potts>
+      
+      <!-- Basic properties of CPM (GGH) algorithm -->
+      <Dimensions x="200" y="200" z="1"/>
+      <Steps>1000000</Steps>
+      <Temperature>10.0</Temperature>
+      <NeighborOrder>3</NeighborOrder>
+   </Potts>
+   
+   <Plugin Name="CellType">
+      
+      <!-- Listing all cell types in the simulation -->
+      <CellType TypeId="0" TypeName="Medium"/>
+      <CellType TypeId="1" TypeName="Stem"/>
+      <CellType TypeId="2" TypeName="Differentiated"/>
+   </Plugin>
+   
+   <Plugin Name="Contact">
+      <!-- Specification of adhesion energies -->
+      <Energy Type1="Medium" Type2="Medium">20.0</Energy>
+      <Energy Type1="Medium" Type2="Stem">20.0</Energy>
+      <Energy Type1="Medium" Type2="Differentiated">20.0</Energy>
+      <Energy Type1="Stem" Type2="Stem">15.0</Energy>
+      <Energy Type1="Stem" Type2="Differentiated">15.0</Energy>
+      <Energy Type1="Differentiated" Type2="Differentiated">15.0</Energy>
+      <NeighborOrder>3</NeighborOrder>
+   </Plugin>
+   
+   <Plugin Name="Volume">
+   </Plugin>
+   
+   <Plugin Name="CenterOfMass">
+   
+   <!-- Module tracking center of mass of each cell -->
+</Plugin>
+
+   
+   <Steppable Type="BlobInitializer">
+      
+      <!-- Initial layout of cells in the form of spherical (circular in 2D) blob -->
+      <Region>
+         <Center x="50" y="50" z="0"/>
+         <Radius>10</Radius>
+         <Gap>0</Gap>
+         <Width>5</Width>
+         <Types>Stem,Differentiated</Types>
+      </Region>
+   </Steppable>
+   
+   
+   <Steppable Type="DiffusionSolverFE">
+
+   <DiffusionField Name="FIELD_NAME_1">
+   
+      <DiffusionData>
+         <FieldName>FIELD_NAME_1</FieldName>
+         <GlobalDiffusionConstant>0.1</GlobalDiffusionConstant>
+         <GlobalDecayConstant>1e-05</GlobalDecayConstant>
+         <!-- Additional options are: -->
+         <!-- <InitialConcentrationExpression>x*y</InitialConcentrationExpression> -->
+         <!-- <ConcentrationFileName>INITIAL CONCENTRATION FIELD - typically a file with path Simulation/NAME_OF_THE_FILE.txt</ConcentrationFileName> -->
+         <DiffusionCoefficient CellType="Medium">0.1</DiffusionCoefficient>
+         <DiffusionCoefficient CellType="Stem">0.1</DiffusionCoefficient>
+         <DiffusionCoefficient CellType="Differentiated">0.1</DiffusionCoefficient>
+         <DecayCoefficient CellType="Medium">0.0001</DecayCoefficient>
+         <DecayCoefficient CellType="Stem">0.0001</DecayCoefficient>
+         <DecayCoefficient CellType="Differentiated">0.0001</DecayCoefficient>
+      </DiffusionData>
+      <SecretionData>
+         <!-- When secretion is defined inside DissufionSolverFEall secretio nconstants are scaled automaticly to account for extra calls of the solver when handling large diffusion constants -->
+         
+         <!-- no  secretion Definition 
+         <Secretion Type="Stem">0.1</Secretion>
+         <Secretion Type="Differentiated">0.1</Secretion>
+         -->
+      </SecretionData>
+      
+      
+       <BoundaryConditions>
+       <Plane Axis="X">
+         <ConstantValue PlanePosition="Min" Value="10.0"/>
+         <ConstantValue PlanePosition="Max" Value="10.0"/> 
+        </Plane>
+       <Plane Axis="Y">
+          <ConstantValue PlanePosition="Min" Value="10.0"/> 
+          <ConstantValue PlanePosition="Max" Value="10.0"/>
+       </Plane>
+      </BoundaryConditions>
+
+   </DiffusionField>
+</Steppable>
+
+
+</CompuCell3D>

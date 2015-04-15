@@ -173,8 +173,8 @@ class ConstraintInitializerSteppable(SteppableBasePy):
         SteppableBasePy.__init__(self,_simulator,_frequency)
         
     def start(self):
-        field=self.getConcentrationField("FIELD_NAME_1")
-        field[:,:,:] = 10
+        field=self.getConcentrationField("Glu")
+        field[:,:,:] = 0
         
         
         

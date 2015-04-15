@@ -52,21 +52,25 @@
    
    <Steppable Type="DiffusionSolverFE">
 
-   <DiffusionField Name="FIELD_NAME_1">
+   <DiffusionField Name="Glu">
    
       <DiffusionData>
-         <FieldName>FIELD_NAME_1</FieldName>
+         <FieldName>Glu</FieldName>
          <GlobalDiffusionConstant>0.1</GlobalDiffusionConstant>
+         
          <GlobalDecayConstant>1e-05</GlobalDecayConstant>
          <!-- Additional options are: -->
          <!-- <InitialConcentrationExpression>x*y</InitialConcentrationExpression> -->
          <!-- <ConcentrationFileName>INITIAL CONCENTRATION FIELD - typically a file with path Simulation/NAME_OF_THE_FILE.txt</ConcentrationFileName> -->
+         
+         <!--
          <DiffusionCoefficient CellType="Medium">0.1</DiffusionCoefficient>
          <DiffusionCoefficient CellType="Stem">0.1</DiffusionCoefficient>
          <DiffusionCoefficient CellType="Differentiated">0.1</DiffusionCoefficient>
          <DecayCoefficient CellType="Medium">0.0001</DecayCoefficient>
          <DecayCoefficient CellType="Stem">0.0001</DecayCoefficient>
          <DecayCoefficient CellType="Differentiated">0.0001</DecayCoefficient>
+         -->
       </DiffusionData>
       <SecretionData>
          <!-- When secretion is defined inside DissufionSolverFEall secretio nconstants are scaled automaticly to account for extra calls of the solver when handling large diffusion constants -->

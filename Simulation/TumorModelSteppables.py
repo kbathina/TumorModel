@@ -264,6 +264,17 @@ class MitosisSteppable(MitosisSteppableBase):
         for cell in cells_to_divide:
             # to change mitosis mode leave one of the below lines uncommented
             self.divideCellRandomOrientation(cell)
+            
+    def copyAdhesionMolecules(self, parent, child):
+        
+        fn = self.adhesionFlexPlugin.getAdhesionMoleculeDensity(parent,"FN")
+        self.adhesionFlexPlugin.setAdhesionMoleculeDensity(child, "FN",fn)
+        
+        integrin = self.adhesionFlexPlugin.getAdhesionMoleculeDensity(parent,"integrin")
+        self.adhesionFlexPlugin.setAdhesionMoleculeDensity(child, "integrin",integrin)
+        
+        cadherin = self.adhesionFlexPlugin.getAdhesionMoleculeDensity(parent,"cadherin")
+        self.adhesionFlexPlugin.setAdhesionMoleculeDensity(child, "cadherin",cadherin)
 
     def updateAttributes(self):
         parentCell=self.mitosisSteppable.parentCell
@@ -278,6 +289,8 @@ class MitosisSteppable(MitosisSteppableBase):
         
         print("pdict: " + str(pdict))
         print("cdict: " + str(cdict))
+        
+        self.copyAdhesionMolecules(parentCell, childCell)
         
         # copy parent dict attributes to child
         

@@ -1,3 +1,4 @@
+
 <CompuCell3D Revision="20141124" Version="3.7.3">
    
    <Potts>
@@ -5,7 +6,7 @@
       <!-- Basic properties of CPM (GGH) algorithm -->
       <Dimensions x="200" y="200" z="1"/>
       <Steps>1000000</Steps>
-      <Temperature>10.0</Temperature>
+      <Temperature>20.0</Temperature>
       <NeighborOrder>3</NeighborOrder>
    </Potts>
    
@@ -17,8 +18,8 @@
       <CellType TypeId="2" TypeName="Differentiated"/>
    </Plugin>
    
+   <!--
    <Plugin Name="Contact">
-      <!-- Specification of adhesion energies -->
       <Energy Type1="Medium" Type2="Medium">20.0</Energy>
       <Energy Type1="Medium" Type2="Stem">20.0</Energy>
       <Energy Type1="Medium" Type2="Differentiated">20.0</Energy>
@@ -27,14 +28,42 @@
       <Energy Type1="Differentiated" Type2="Differentiated">15.0</Energy>
       <NeighborOrder>3</NeighborOrder>
    </Plugin>
+   -->
    
    <Plugin Name="Volume">
    </Plugin>
    
    <Plugin Name="CenterOfMass">
+   </Plugin>
    
-   <!-- Module tracking center of mass of each cell -->
+   
+   <Plugin Name="AdhesionFlex">
+   
+   <!-- Specification of adhesion energies as a function of cadherin concentration at cell membranes -->
+   <!-- Adhesion energy is a function of two cells in ocntact. the functional form is specified by the user -->
+   <AdhesionMolecule Molecule="cadherin"/>
+   <AdhesionMolecule Molecule="integrin"/>
+   <AdhesionMolecule Molecule="FN"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="0" Molecule="cadherin"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="0.0" Molecule="integrin"/>
+   <AdhesionMoleculeDensity CellType="Medium" Density="16.1" Molecule="FN"/>
+   <AdhesionMoleculeDensity CellType="Stem" Density="10.1" Molecule="cadherin"/>
+   <AdhesionMoleculeDensity CellType="Stem" Density="8.0" Molecule="integrin"/>
+   <AdhesionMoleculeDensity CellType="Differentiated" Density="10.1" Molecule="cadherin"/>
+   <AdhesionMoleculeDensity CellType="Differentiated" Density="8.0" Molecule="integrin"/>
+   <BindingFormula Name="Binary">
+      <Formula>min(Molecule1,Molecule2)</Formula>
+      <Variables>
+         <AdhesionInteractionMatrix>
+            <BindingParameter Molecule1="cadherin" Molecule2="cadherin">-2.</BindingParameter>
+            <BindingParameter Molecule1="cadherin" Molecule2="integrin">0</BindingParameter>
+            <BindingParameter Molecule1="integrin" Molecule2="FN">-2</BindingParameter>
+         </AdhesionInteractionMatrix>
+      </Variables>
+   </BindingFormula>
+   <NeighborOrder>3</NeighborOrder>
 </Plugin>
+
 
    
    <Steppable Type="BlobInitializer">

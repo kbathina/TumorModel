@@ -12,6 +12,21 @@ GROWTH_THRESHOLD = 30.
 DEATH_THRESHOLD = 1.
 INITIAL_CONCENTRATION = 5.
 
+MEDIUM_CADHERIN = 0
+MEDIUM_INTEGRIN = 0
+MEDIUM_FN = 16.1
+
+
+
+def KillCell(steppable, cell):
+    """
+    Kills a cell by setting its target volume to zero, and re-setting the 
+    type to medium.
+    """
+    
+    cell.targetVolume=0
+    cell.lambdaVolume=100
+
 # define a data structure to hold a tree of 
 # stem cells and thier progeny
 class CellNode: 
@@ -357,8 +372,9 @@ class MitosisSteppable(MitosisSteppableBase):
             
             if pdivisions >= maxDivisions:
                 # kill the cell
-                parentCell.targetVolume=0
-                childCell.targetVolume=0
+                KillCell(self, parentCell)
+                KillCell(self, childCell)
+
                 
                 writeCell(self, "MITOSIS_DEATH", self.mcs, parentCell)
                 writeCell(self, "MITOSIS_DEATH", self.mcs, childCell)
@@ -408,9 +424,8 @@ class DeathSteppable(SteppableBasePy):
                     writeCell(self, "DEATH", mcs, cell)
                     KillNode(cell, mcs)
                     
-                    cell.targetVolume=0
-                    cell.lambdaVolume=0
-                    cell.type = 0
+                    KillCell(self, cell)
+
                     
             
         
@@ -424,10 +439,9 @@ class DeathSteppable(SteppableBasePy):
                     #Need to write to log file 
                     writeCell(self, "DEATH", mcs, cell)
                     KillNode(cell, mcs)
+                    KillCell(self, cell)
                     
-                    cell.targetVolume=0
-                    cell.lambdaVolume=0
-                    cell.type = 0
+                    
 
  
 
